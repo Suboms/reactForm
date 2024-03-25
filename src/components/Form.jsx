@@ -1,7 +1,16 @@
 import React, { useState } from "react";
 import style from "./Form.module.css";
+import SelectField from "./Select";
+import InputField from "./Input";
 
 const Form = () => {
+  const options = [
+    { value: "disabled", label: "Select your Gender", disabled: true },
+    { value: "male", label: "Male" },
+    { value: "female", label: "Female" },
+    { value: "others", label: "Prefer not to say" },
+  ];
+
   const symbolExpression = /[!@#$%^&*()_+=[\]{};':"|,.<>/?]/;
   const numberExpression = /[0-9]/;
   const emailExpression = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
@@ -17,6 +26,8 @@ const Form = () => {
     password: "",
   });
 
+  const [errors, setErrors] = useState({});
+
   const handleChange = (e) => {
     const name = e.target.name;
     const value = e.target.value;
@@ -24,58 +35,75 @@ const Form = () => {
       ...prevState,
       [name]: value,
     }));
+
+    setErrors((prevState) => ({
+      ...prevState,
+      [name]: "",
+    }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!handleValidation()) {
-      alert("Please ensure all fields are valid");
-      return;
+    const validationErrors = handleValidation();
+
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+    } else {
+      alert("Form Submitted Successfully");
     }
-    console.log(userData);
   };
   const handleValidation = () => {
-    if (
-      userData.fname === "" ||
-      userData.lname === "" ||
-      userData.email === "" ||
-      userData.uname === "" ||
-      userData.gender === "" ||
-      userData.password === ""
-    ) {
-      return false;
-    } else {
-      if (
-        userData.fname.length <= 3 ||
-        userData.lname.length <= 3 ||
-        userData.uname.length <= 3
-      ) {
-        console.log("Name should be greater than 3 characters");
-        return false;
-      } else if (
-        symbolExpression.test(userData.fname) ||
-        symbolExpression.test(userData.lname)
-      ) {
-        console.log("Symbols are not allowed in name");
-        return false;
-      } else if (
-        numberExpression.test(userData.fname) ||
-        numberExpression.test(userData.lname)
-      ) {
-        console.log("Numbers are not allowed in name");
-        return false;
-      }
-      if (!emailExpression.test(userData.email)) {
-        console.log("Invalid email");
-        return false;
-      }
-      if (!passwordExpression.test(userData.password)) {
-        console.log("Invalid Password");
-        return false;
-      }
+    const errors = {};
+    if (userData.fname === "") {
+      errors.fname = "First Name is required";
+    } else if (userData.fname.length <= 3) {
+      errors.fname = "First Name should be greater than 3 characters";
+    } else if (symbolExpression.test(userData.fname)) {
+      errors.fname = "Symbols are not allowed in First Name";
+    } else if (numberExpression.test(userData.fname)) {
+      errors.fname = "Numbers are not allowed in First Name";
     }
-    return true;
+    if (userData.lname === "") {
+      errors.lname = "Last Name is required";
+    } else if (userData.lname.length <= 3) {
+      errors.lname = "Last Name should be greater than 3 characters";
+    } else if (symbolExpression.test(userData.lname)) {
+      errors.lname = "Symbols are not allowed in Last Name";
+    } else if (numberExpression.test(userData.lname)) {
+      errors.lname = "Numbers are not allowed in Last Name";
+    }
+
+    if (userData.email === "") {
+      errors.email = "Email is required";
+    } else if (!emailExpression.test(userData.email)) {
+      errors.email = "Invalid Email";
+    }
+
+    if (userData.uname === "") {
+      errors.uname = "Username is required";
+    } else if (userData.uname.length <= 3) {
+      errors.uname = "Username should be greater than 3 characters";
+    } else if (symbolExpression.test(userData.uname)) {
+      errors.uname = "Symbols are not allowed in Username";
+    } else if (numberExpression.test(userData.uname)) {
+      errors.uname = "Numbers are not allowed in Username";
+    }
+
+    if (userData.gender === "") {
+      errors.gender = "Gender is required";
+    } else if (userData.gender === "disabled") {
+      errors.gender = "Please Select a valid Gender";
+    }
+
+    if (userData.password === "") {
+      errors.password = "Password is required";
+    } else if (!passwordExpression.test(userData.password)) {
+      errors.password = "Invalid Password";
+    }
+
+    return errors;
   };
+
   return (
     <>
       <div className={`${style["form-container"]}`}>
@@ -85,84 +113,65 @@ const Form = () => {
         <div className={`${style["form-content"]}`}>
           <form action="" method="post" onSubmit={handleSubmit}>
             <div className={`${style["row"]}`}>
-              <div className={`${style["input-container"]}`}>
-                <label htmlFor={style.fname}>First Name</label>
-                <input
-                  type="text"
-                  name="fname"
-                  id={style.fname}
-                  placeholder="First Name"
-                  className={`${style["form-control"]} `}
-                  onChange={handleChange}
-                />
-                <span>Pussy</span>
-              </div>
-              <div className={`${style["input-container"]}`}>
-                <label htmlFor={style.lname}>Last Name</label>
-                <input
-                  type="text"
-                  name="lname"
-                  id={style.lname}
-                  placeholder="Last Name"
-                  className={`${style["form-control"]} `}
-                  onChange={handleChange}
-                />
-              </div>
-            </div>
-
-            <div className={`${style["input-container"]}`}>
-              <label htmlFor={style.email}>Email</label>
-              <input
-                type="email"
-                name="email"
-                id={style.email}
-                placeholder="Email"
-                className={`${style["form-control"]} `}
-                onChange={handleChange}
-              />
-            </div>
-
-            <div className={`${style["input-container"]}`}>
-              <label htmlFor={style.uname}>Username</label>
-              <input
+              <InputField
+                label="First Name"
+                name="fname"
+                placeholder="First Name"
                 type="text"
-                name="uname"
-                id={style.uname}
-                placeholder="Username"
-                className={`${style["form-control"]} `}
+                value={userData.fname}
                 onChange={handleChange}
+                errors={errors}
+              />
+
+              <InputField
+                label="Last Name"
+                name="lname"
+                placeholder="Last Name"
+                type="text"
+                value={userData.lname}
+                onChange={handleChange}
+                errors={errors}
               />
             </div>
 
-            <div className={`${style["input-container"]}`}>
-              <label htmlFor={style.gender}>Gender</label>
-              <select
-                name="gender"
-                id={style.gender}
-                className={`${style["form-control"]} `}
-                onChange={handleChange}
-                defaultValue="disabled">
-                <option value="disabled" disabled>
-                  Select your Gender
-                </option>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-                <option value="others">Prefer not to say</option>
-              </select>
-            </div>
+            <InputField
+              label="Email"
+              name="email"
+              placeholder="Email"
+              type="email"
+              value={userData.email}
+              onChange={handleChange}
+              errors={errors}
+            />
 
-            <div className={`${style["input-container"]}`}>
-              <label htmlFor={style.password}>Password</label>
-              <input
-                type="password"
-                name="password"
-                id={style.password}
-                placeholder="Password"
-                className={`${style["form-control"]} `}
-                onChange={handleChange}
-              />
-            </div>
+            <InputField
+              label="Username"
+              name="uname"
+              placeholder="Username"
+              type="text"
+              value={userData.uname}
+              onChange={handleChange}
+              errors={errors}
+            />
 
+            <SelectField
+              label="Gender"
+              name="gender"
+              defaultValue="disabled"
+              onChange={handleChange}
+              options={options}
+              errors={errors}
+            />
+
+            <InputField
+              label="Password"
+              name="password"
+              placeholder="Password"
+              type="password"
+              value={userData.password}
+              onChange={handleChange}
+              errors={errors}
+            />
             <div className={`${style["submit-container"]}`}>
               <button type="submit" className={`${style["submit-button"]} `}>
                 Submit
@@ -170,15 +179,6 @@ const Form = () => {
             </div>
           </form>
         </div>
-
-        <h1>
-          First Name: {userData.fname} <br />
-          Last Name: {userData.lname} <br />
-          Email: {userData.email} <br />
-          Username: {userData.uname} <br />
-          Gender: {userData.gender} <br />
-          Password: {userData.password} <br />
-        </h1>
       </div>
     </>
   );
