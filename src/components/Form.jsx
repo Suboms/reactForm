@@ -107,11 +107,11 @@ const Form = () => {
   return (
     <>
       <div className={`${style["form-container"]}`}>
-        <div className={`${style["header-container"]}`}>
-          <h1>Form</h1>
-        </div>
         <div className={`${style["form-content"]}`}>
           <form action="" method="post" onSubmit={handleSubmit}>
+            <div className={`${style["header-container"]}`}>
+              <h1>Form</h1>
+            </div>
             <div className={`${style["row"]}`}>
               <InputField
                 label="First Name"
