@@ -6,7 +6,7 @@ const InputField = ({label, name, placeholder, type, value, onChange, errors}) =
   return (
     <>
       <div className={`${style["input-container"]}`}>
-        <label htmlFor={name}>{label}</label>
+        <label htmlFor={name} className={`${style["form-label"]}`}>{label}</label>
         <input
           type={type}
           name={name}
