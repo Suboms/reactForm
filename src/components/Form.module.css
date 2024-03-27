@@ -9,18 +9,21 @@
   font-optical-sizing: auto;
 }
 body {
+  
   margin: auto;
   padding: 0;
   background-repeat: no-repeat;
   background-image: linear-gradient(155deg, #adb2b6, #e6e6e6);
-  height: auto;
+  overflow: auto;
 }
 
 .form-container {
+  margin: auto;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  height: 100%;
+  flex-direction: column;
+  max-width: 650px;
+  padding: 10px;
 }
 .form-container > * {
   width: 100%;
@@ -43,10 +46,8 @@ body {
 .form-content {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  height: 100%;
-  padding: 0 50px;
+  padding: 20px 50px;
 }
 .form-content form {
   display: flex;
@@ -66,7 +67,7 @@ body {
 .submit-container {
   display: flex;
   flex-direction: column;
-  margin: 10px 0 0 0;
+  margin: 10px 0;
   padding: 5px 10px;
   width: 100%;
 }
@@ -111,7 +112,7 @@ body {
   font-size: 20px;
   font-variant: small-caps;
 }
-.error-message{
+.error-message {
   padding: 10px 0;
   font-size: 15px;
 }
